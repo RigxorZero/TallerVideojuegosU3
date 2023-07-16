@@ -13,8 +13,8 @@ namespace CanvasDrawing
             InitializeComponent();
             DoubleBuffered = true;
 
-            GameEngine.MainCamera.xSize = 1920;
-            GameEngine.MainCamera.ySize = 1080;
+            GameEngine.MainCamera.xSize = 1000;
+            GameEngine.MainCamera.ySize = 550;
             GameEngine.MainCamera.scale = 1f;
             GameEngine.MainCamera.Position = new Vector2(0, 0);
 

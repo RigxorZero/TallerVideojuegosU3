@@ -73,9 +73,9 @@ namespace CanvasDrawing.Game
             Graphics graphics = e.Graphics;
 
             // Dibuja la imagen "Inicio"
-            Image InicioImage  = Properties.Resources._1298880;
+           // Image InicioImage  = Properties.Resources._1298880;
             Rectangle destinationRectangle = new Rectangle(0, 0, form.Width, form.Height);
-            graphics.DrawImage(InicioImage, destinationRectangle);
+            //graphics.DrawImage(InicioImage, destinationRectangle);
 
             // Dibuja nombre del juego
             string gamenombre = "Ghost escape";

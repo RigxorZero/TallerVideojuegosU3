@@ -3,6 +3,7 @@ using CanvasDrawing.Game;
 using CanvasDrawing.UtalEngine2D_2023_1.Physics;
 using System;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -18,21 +19,14 @@ namespace CanvasDrawing.UtalEngine2D_2023_1
         public static bool playerLost = false; // Variable para indicar si el jugador ha perdido
         private static GameInicio gameInicio;
         private static GameOverScreen gameOverScreen;
-        //Manejo spawn enemigos
-        private static Random random = new Random();
-        private static float timeSinceLastMovNPC = 0f;
-        private static float timeSinceLastPerseguidorNPC = 0f;
-        private static float timeSinceLastEstaticoNPC = 0f;
-
-        private const float MovNPCGenerationInterval = 10f;
-        private const float PerseguidorNPCGenerationInterval = 15f;
-        private const float EstaticoNPCGenerationInterval = 20f;
         //Clase HUD
         public static HealthBar healthBar;
         //Creacion de personaje y enemigos
-        public static Image NPC { get; private set; }
+        public static Image jugador2 { get; private set; }
         public static Image jugador { get; private set; }
         public static Player player { get; private set; }
+        public static Player2 player2 { get; private set; }
+
         private static float timeScale = 1f;
         public static float TimeScale
         {
@@ -65,15 +59,15 @@ namespace CanvasDrawing.UtalEngine2D_2023_1
             engineDrawForm.KeyDown += new KeyEventHandler(InputManager.KeyDownHandler);
             engineDrawForm.KeyUp += new KeyEventHandler(InputManager.KeyUpHandler);
             //Asigna el tamaño del form al doble que el de la camara
-            engineDrawForm.Height = MainCamera.ySize * 2;
-            engineDrawForm.Width = MainCamera.xSize * 2;
+            engineDrawForm.Height = MainCamera.ySize;
+            engineDrawForm.Width = MainCamera.xSize;
             //Asigna imagenes a jugador y NPC
-            jugador = Properties.Resources._1_south1;
-            NPC = Properties.Resources._3_south1;
+            jugador = Properties.Resources.BouncingBallBar;
             //Gestión de spawn de player
             Random random = new Random();
-            player = Player.GetInstance(2, jugador, new Vector2(40, 48), 100, 100);
-            player.currentLifes = 3;
+            player = Player.GetInstance(2, jugador, new Vector2(32, 64), 50, 300);
+            player2 = Player2.GetInstance(2, jugador, new Vector2(32, 64), 950, 300);
+            
             //Crea instancias de otras pantallas
             gameInicio = new GameInicio(engineDrawForm);
             gameOverScreen = new GameOverScreen(engineDrawForm);
@@ -106,11 +100,6 @@ namespace CanvasDrawing.UtalEngine2D_2023_1
                 GameObjectManager.Update();
                 PhysicsEngine.Update();
 
-                // Aumenta el tiempo de generación de cada tipo de NPC
-                timeSinceLastMovNPC += Time.deltaTime;
-                timeSinceLastPerseguidorNPC += Time.deltaTime;
-                timeSinceLastEstaticoNPC += Time.deltaTime;
-
                 //Verifica si perdio el jugador
                 if (playerLost)
                 {
@@ -119,26 +108,6 @@ namespace CanvasDrawing.UtalEngine2D_2023_1
                 }
                 //Actualiza entradas del jugador
                 InputManager.Update();
-                // Genera NPC de tipo EnemigoMov cada 10 segundos
-                if (timeSinceLastMovNPC >= MovNPCGenerationInterval)
-                {
-                    GenerateEnemigoMov();
-                    timeSinceLastMovNPC = 0f;
-                }
-
-                // Genera NPC de tipo EnemigoPerseguidor cada 15 segundos
-                if (timeSinceLastPerseguidorNPC >= PerseguidorNPCGenerationInterval)
-                {
-                    GenerateEnemigoPerseguidor();
-                    timeSinceLastPerseguidorNPC = 0f;
-                }
-
-                // Genera NPC de tipo EnemigoEstatico cada 20 segundos
-                if (timeSinceLastEstaticoNPC >= EstaticoNPCGenerationInterval)
-                {
-                    GenerateEnemigoEstatico();
-                    timeSinceLastEstaticoNPC = 0f;
-                }
 
                 //Si no se ha perdido actualiza deadUpdate
                 if (!gameInicio.IsActive && !playerLost)
@@ -147,20 +116,22 @@ namespace CanvasDrawing.UtalEngine2D_2023_1
                 }
             }
         }
-        //Enfoque de camara 
+        // Enfoque de la cámara
         public static Vector2 WorldToCameraPos(Vector2 pos)
         {
-            float minX = MainCamera.Position.x + MainCamera.xSize * 0.5f;
-            float maxX = MainCamera.Position.x + (1920 - 2 * 50) * MainCamera.scale - MainCamera.xSize * 0.5f;
-            float minY = MainCamera.Position.y + MainCamera.ySize * 0.5f;
-            float maxY = MainCamera.Position.y + (1080 - 2 * 50) * MainCamera.scale - MainCamera.ySize * 0.5f;
+            float minX = MainCamera.Position.x;
+            float maxX = MainCamera.Position.x + (1920 - 2 * 50) * MainCamera.scale - MainCamera.xSize;
+            float minY = MainCamera.Position.y;
+            float maxY = MainCamera.Position.y + (1080 - 2 * 50) * MainCamera.scale - MainCamera.ySize;
 
             float clampedX = Math.Max(minX, Math.Min(pos.x, maxX));
             float clampedY = Math.Max(minY, Math.Min(pos.y, maxY));
 
-            return new Vector2((clampedX - MainCamera.Position.x) / MainCamera.scale + MainCamera.xSize * 0.5f,
-                               (clampedY - MainCamera.Position.y) / MainCamera.scale + MainCamera.ySize * 0.5f);
+            return new Vector2((clampedX - MainCamera.Position.x) / MainCamera.scale + MainCamera.xSize,
+                               (clampedY - MainCamera.Position.y) / MainCamera.scale + MainCamera.ySize);
         }
+
+
         //En caso de redimensionar la pantalla
         public static void Paint(Object sender, PaintEventArgs e)
         {
@@ -199,16 +170,7 @@ namespace CanvasDrawing.UtalEngine2D_2023_1
             for (int i = 0; i < GameObjectManager.AllGameObjects.Count; i++)
             {
                 GameObject go = GameObjectManager.AllGameObjects[i];
-                //En caso de ser una bala, sino dibuja normal
-                if (go is Bullet)
-                {
-                    Bullet bullet = (Bullet)go;
-                    bullet.DrawBullet(graphics, MainCamera);
-                }
-                else
-                {
-                    go.Draw(graphics, MainCamera);
-                }
+                go.Draw(graphics, MainCamera);
             }
             //Dibuja los textos de UtalText
             for (int i = 0; i < GameObjectManager.AllText.Count; i++)
@@ -216,69 +178,6 @@ namespace CanvasDrawing.UtalEngine2D_2023_1
                 UtalText utext = GameObjectManager.AllText[i];
                 utext.DrawString(graphics);
             }
-            //Dibuja el HUD
-            healthBar.Draw(graphics);
-        }
-        // Método para generar un npc
-        private static void GenerateEnemigoMov()
-        {
-            Vector2 npcPosition = GetRandomPositionWithoutCollision();
-            Console.WriteLine("Creado EnemigoMov en" + npcPosition.ToString());
-            // Crea el EnemigoMov en la posición generada
-            new EnemigoMov(2, NPC, new Vector2(40, 48), player, npcPosition.x, npcPosition.y);
-        }
-
-        private static void GenerateEnemigoPerseguidor()
-        {
-            Vector2 npcPosition = GetRandomPositionWithoutCollision();
-            Console.WriteLine("Creado EnemigoPerseguidor en" + npcPosition.ToString());
-            // Crea el EnemigoPerseguidor en la posición generada
-            new EnemigoPerseguidor(2, NPC, new Vector2(40, 48), player, npcPosition.x, npcPosition.y);
-        }
-
-        private static void GenerateEnemigoEstatico()
-        {
-            Vector2 npcPosition = GetRandomPositionWithoutCollision();
-            Console.WriteLine("Creado EnemigoEstatico en" + npcPosition.ToString());
-            // Crea el EnemigoEstatico en la posición generada
-            new EnemigoEstatico(2, NPC, new Vector2(40, 48), player, npcPosition.x, npcPosition.y);
-        }
-
-        // Crea una posición aleatoria que no colisione con nada
-        private static Vector2 GetRandomPositionWithoutCollision()
-        {
-            Vector2 position;
-
-            do
-            {
-                // Genera una posición aleatoria dentro de los límites del mundo
-                int x = random.Next(0, 1900 * 2);
-                int y = random.Next(0, 1060 * 2);
-                position = new Vector2(x, y);
-            }
-            while (HasCollisionWithSolidSurface(position));
-
-            return position;
-        }
-        //Verifica que no haya colisión en la posición creada
-        private static bool HasCollisionWithSolidSurface(Vector2 position)
-        {
-            CollisionDetector collisionDetector = new CollisionDetector();
-
-            foreach (GameObject go in GameObjectManager.AllGameObjects)
-            {
-                if (go is Wall)
-                {
-                    foreach (Collider collider in go.rigidbody.colliders)
-                    {
-                        if (collisionDetector.DetectCollisionWithPoint(collider, position))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
         }
     }
 }

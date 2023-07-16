@@ -29,7 +29,7 @@ public class GameObject
             rigidbody = new Rigidbody();    
             rigidbody.SetTransform(transform);
 
-            if (this is Wall || this is Bullet)
+            if (this is Player || this is Player2)
             {
                 rigidbody.CreateRectCollider(newSize.x, newSize.y);
             }

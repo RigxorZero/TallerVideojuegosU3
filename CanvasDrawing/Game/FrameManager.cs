@@ -10,15 +10,9 @@ namespace CanvasDrawing.Game
         public static FrameManager Instance;
         public override void Update()
         {
-            // Centrar la cámara en el personaje seleccionado
-            if (AllFrames.Count > selectedIndex)
-            {
-                Vector2 selectedCharacterPosition = AllFrames[selectedIndex].transform.position;
-                float cameraX = selectedCharacterPosition.x - (GameEngine.MainCamera.xSize / 2);
-                float cameraY = selectedCharacterPosition.y - (GameEngine.MainCamera.ySize / 2);
-                GameEngine.MainCamera.Position = new Vector2(cameraX, cameraY);
-            }
+            // Mantener la cámara estática en su posición y tamaño
+            GameEngine.MainCamera.Position = new Vector2(0, 0);  // Ajusta la posición de la cámara según tus necesidades
+            GameEngine.MainCamera.scale = 1;  // Ajusta la escala de la cámara según tus necesidades
         }
-
     }
 }

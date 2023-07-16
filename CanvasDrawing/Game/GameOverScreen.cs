@@ -61,9 +61,9 @@ namespace CanvasDrawing.Game
             Graphics graphics = e.Graphics;
 
             // Dibuja la imagen "Lose"
-            Image loseImage = Properties.Resources.Lose; // Asegúrate de que el recurso "Lose" esté agregado a los recursos del proyecto
+            //Image loseImage = Properties.Resources.Lose; // Asegúrate de que el recurso "Lose" esté agregado a los recursos del proyecto
             Rectangle destinationRectangle = new Rectangle(0, 0, form.Width, form.Height);
-            graphics.DrawImage(loseImage, destinationRectangle);
+            //graphics.DrawImage(loseImage, destinationRectangle);
 
             // Dibuja el contenido adicional de la pantalla de Game Over
 

@@ -6,16 +6,16 @@ using System.Windows.Forms;
 
 namespace CanvasDrawing.Game
 {
-    public class Player : Frame
+    public class Player2 : Frame
     {
         public Image sprite;
         public int lifes = 3;
         public int currentLifes;
         public static int score;
-        private static Player instance; // Instancia única de Player
+        private static Player2 instance; // Instancia única de Player
         public Vector2 Direction { get; set; }
 
-        public Player(float speed, Image newSprite, Vector2 newSize, float x = 0, float y = 0) : base(speed, newSprite, newSize, x, y)
+        public Player2(float speed, Image newSprite, Vector2 newSize, float x = 0, float y = 0) : base(speed, newSprite, newSize, x, y)
         {
 
         }
@@ -29,11 +29,11 @@ namespace CanvasDrawing.Game
         {
         }
         //Consigue instancia player
-        public static Player GetInstance(float speed, Image newSprite, Vector2 newSize, float x = 0, float y = 0)
+        public static Player2 GetInstance(float speed, Image newSprite, Vector2 newSize, float x = 0, float y = 0)
         {
             if (instance == null)
             {
-                instance = new Player(speed, newSprite, newSize, x, y);
+                instance = new Player2(speed, newSprite, newSize, x, y);
             }
             return instance;
         }
@@ -44,7 +44,7 @@ namespace CanvasDrawing.Game
             bool moved = false;
             float moveSpeed = Speed * 100; // Velocidad de movimiento del jugador
 
-            if (InputManager.GetKey(Keys.W))
+            if (InputManager.GetKey(Keys.Up))
             {
                 if (transform.position.y - (moveSpeed * Time.deltaTime) > 0)
                 {
@@ -52,7 +52,7 @@ namespace CanvasDrawing.Game
                     moved = true;
                 }
             }
-            else if (InputManager.GetKey(Keys.S))
+            else if (InputManager.GetKey(Keys.Down))
             {
                 if (transform.position.y + (moveSpeed * Time.deltaTime) < 1080 * 2)
                 {
