@@ -13,6 +13,7 @@ namespace CanvasDrawing.Game
         private bool isInitialized;
         public static Camera MainCamera = new Camera();
         public bool IsActive{private set; get;}
+        public static Image ballSprite { get; private set; }
         public GameInicio(Form engineDrawForm)
         {
             form = engineDrawForm;
@@ -115,6 +116,17 @@ namespace CanvasDrawing.Game
         {
             // Crea una instancia del formulario del GameInitializer
             // Inicializa el juego
+            // Obtén las dimensiones de la cámara
+            int cameraWidth = GameEngine.MainCamera.xSize;
+            int cameraHeight = GameEngine.MainCamera.ySize;
+
+            // Calcula la posición inicial en el centro de la pantalla
+            float ballX = cameraWidth / 2f;
+            float ballY = cameraHeight / 2f;
+
+            // Crea una instancia de Ball en el centro de la pantalla
+            ballSprite = Properties.Resources.BouncingBall;
+            new Ball(1, ballSprite, new Vector2(16, 16), ballX, ballY);
             form.Paint -= Form_Paint;
             IsActive = false;
             form.Controls.Remove(startButton);

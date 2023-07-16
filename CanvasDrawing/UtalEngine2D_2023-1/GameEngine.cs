@@ -67,7 +67,6 @@ namespace CanvasDrawing.UtalEngine2D_2023_1
             Random random = new Random();
             player = Player.GetInstance(2, jugador, new Vector2(32, 64), 50, 300);
             player2 = Player2.GetInstance(2, jugador, new Vector2(32, 64), 950, 300);
-            
             //Crea instancias de otras pantallas
             gameInicio = new GameInicio(engineDrawForm);
             gameOverScreen = new GameOverScreen(engineDrawForm);

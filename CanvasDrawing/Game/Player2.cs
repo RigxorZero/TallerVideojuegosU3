@@ -64,7 +64,6 @@ namespace CanvasDrawing.Game
             {
                 lastPos = auxLastPos;
             }
-            //spriteRenderer.Sprite = currentAnimation.Value.CurrentFrame;
         }
         //Dibuja al jugador
         public override void Draw(Graphics graphics, Camera camera)

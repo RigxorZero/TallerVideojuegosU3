@@ -6,12 +6,12 @@ namespace CanvasDrawing.Game
 {
     public static class GameInitializer //Dibuja el tablero
     {
-        public static Image ballSprite { get; private set; }
+        
         public static void InitializeGame(Form form)
         {
             Image piso = Properties.Resources.Piso;
             Image muro = Properties.Resources.Muro;
-            ballSprite = Properties.Resources.BouncingBall;
+            
 
             for (int i = 0; i < 20; i++)
             {
@@ -28,17 +28,6 @@ namespace CanvasDrawing.Game
                     }
                 }
             }
-
-            // Obtén las dimensiones de la cámara
-            int cameraWidth = GameEngine.MainCamera.xSize;
-            int cameraHeight = GameEngine.MainCamera.ySize;
-
-            // Calcula la posición inicial en el centro de la pantalla
-            float ballX = cameraWidth / 2f;
-            float ballY = cameraHeight / 2f;
-
-            // Crea una instancia de Ball en el centro de la pantalla
-            new Ball(2, ballSprite, new Vector2(16, 16), ballX, ballY);
 
             GameEngine.InitEngine(form);
         }

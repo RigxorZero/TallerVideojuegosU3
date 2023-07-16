@@ -23,7 +23,6 @@ namespace CanvasDrawing.Game
         {
             // Mueve la esfera según su velocidad
             transform.position += velocity * 50 * Time.deltaTime;
-
             Console.WriteLine(velocity);
         }
 
@@ -31,26 +30,19 @@ namespace CanvasDrawing.Game
         {
             if (other is Wall)
             {
-                // Colisión con un objeto Wall
-                // Implementa aquí la lógica de colisión con un Wall
-
                 Wall wall = (Wall)other;
                 float wallTop = wall.transform.position.y;
                 float wallBottom = wall.transform.position.y + wall.spriteRenderer.Size.y;
 
-                if (velocity.y > 0 && transform.position.y + newSize.y >= wallTop && transform.position.y <= wallBottom) // Colisión por la parte inferior
+                if (velocity.y > 0 && transform.position.y <= wallTop) // Colisión en la parte superior del muro
                 {
-                    transform.position = new Vector2(transform.position.x, wallTop - newSize.y); // Ajusta la posición de la esfera
                     velocity.y = -velocity.y; // Invierte la velocidad en el eje Y
                 }
-                else if (velocity.y < 0 && transform.position.y <= wallBottom && transform.position.y + newSize.y >= wallTop) // Colisión por la parte superior
+                else if (velocity.y < 0 && transform.position.y <= wallBottom) // Colisión en la parte inferior del muro
                 {
-                    transform.position = new Vector2(transform.position.x, wallBottom); // Ajusta la posición de la esfera
                     velocity.y = -velocity.y; // Invierte la velocidad en el eje Y
                 }
             }
-
-
 
             else if (other is Ball)
             {
@@ -58,11 +50,47 @@ namespace CanvasDrawing.Game
                 // Implementa aquí la lógica de colisión con otra Ball
                 // ...
             }
+            else if (other is Player2)
+            {
+                Player2 player = (Player2)other;
+                float playerCenter = player.transform.position.y + player.spriteRenderer.Size.y / 2;
+
+                // Invertir la dirección horizontal de la pelota
+                velocity.x = -velocity.x;
+
+                // Ajustar la dirección vertical de la pelota en función de la posición de colisión en el jugador
+                if (transform.position.y < playerCenter)
+                {
+                    velocity.y = -Math.Abs(velocity.y); // Rebote hacia abajo
+                }
+                else
+                {
+                    velocity.y = Math.Abs(velocity.y); // Rebote hacia arriba
+                }
+
+                // Aumentar la velocidad de la pelota (opcional)
+                velocity *= 1.1f; // Multiplicar la velocidad actual por un factor de incremento
+            }
             else if (other is Player)
             {
-                // Colisión con un objeto Player
-                // Implementa aquí la lógica de colisión con un Player
-                // ...
+                Player player = (Player)other;
+                float playerCenter = player.transform.position.y + player.spriteRenderer.Size.y / 2;
+
+                // Invertir la dirección horizontal de la pelota
+                velocity.x = -velocity.x;
+
+                // Ajustar la dirección vertical de la pelota en función de la posición de colisión en el jugador
+                if (transform.position.y < playerCenter)
+                {
+                    velocity.y = -Math.Abs(velocity.y); // Rebote hacia abajo
+                }
+                else
+                {
+                    velocity.y = Math.Abs(velocity.y); // Rebote hacia arriba
+                }
+
+                // Aumentar la velocidad de la pelota (opcional)
+                velocity *= 1.1f; // Multiplicar la velocidad actual por un factor de incremento
             }
         }
 
