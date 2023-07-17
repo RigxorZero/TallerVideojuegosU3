@@ -28,7 +28,6 @@ public class GameObject
         {
             rigidbody = new Rigidbody();    
             rigidbody.SetTransform(transform);
-            rigidbody.mass = 1.0f;
 
             if (this is Player || this is Player2)
             {

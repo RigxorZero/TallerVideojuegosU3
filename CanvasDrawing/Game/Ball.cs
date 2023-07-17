@@ -118,41 +118,24 @@ namespace CanvasDrawing.Game
                 {
                     velocity.y = -velocity.y; // Invierte la velocidad en el eje Y
                 }
-                // Aumentar la velocidad de la pelota
-                velocity *= 1.1f; // Multiplicar la velocidad actual por un factor de incremento
             }
 
             else if (other is Ball)
             {
                 Ball otherBall = (Ball)other;
 
-                // Calcula el vector de dirección entre las dos bolas
                 Vector2 collisionDirection = otherBall.transform.position - transform.position;
-
-                // Normaliza el vector de dirección
                 collisionDirection.Normalize();
 
-                // Calcula las velocidades proyectadas en la dirección de la colisión
                 float thisVelocityProjection = velocity.x * collisionDirection.x + velocity.y * collisionDirection.y;
                 float otherVelocityProjection = otherBall.velocity.x * collisionDirection.x + otherBall.velocity.y * collisionDirection.y;
 
-                // Calcula las masas inversas de las bolas
-                float thisInverseMass = 1f / this.rigidbody.mass;
-                float otherInverseMass = 1f / otherBall.rigidbody.mass;
+                Vector2 newVelocity = velocity - collisionDirection * thisVelocityProjection;
+                Vector2 otherNewVelocity = otherBall.velocity + collisionDirection * otherVelocityProjection;
 
-                // Calcula las nuevas velocidades después de la colisión (aplicando la fórmula de colisión elástica teniendo en cuenta las masas)
-                Vector2 thisNewVelocity = (collisionDirection * (otherInverseMass * otherVelocityProjection) * 2f) + (collisionDirection * (thisVelocityProjection * (thisInverseMass - otherInverseMass)));
-                Vector2 otherNewVelocity = (collisionDirection * (otherVelocityProjection * (otherInverseMass - thisInverseMass))) + (collisionDirection * (2f * thisInverseMass * thisVelocityProjection));
-
-                // Actualiza las velocidades de las bolas
-                velocity = thisNewVelocity;
+                velocity = newVelocity;
                 otherBall.velocity = otherNewVelocity;
             }
-
-
-
-
-
 
 
 
@@ -161,7 +144,7 @@ namespace CanvasDrawing.Game
                 Player2 player = (Player2)other;
                 float playerCenter = player.transform.position.y + player.spriteRenderer.Size.y / 2;
 
-                // Invertir la dirección horizontal de la pelota
+                // Invierte la dirección horizontal de la pelota
                 velocity.x = -velocity.x;
 
                 // Ajustar la dirección vertical de la pelota en función de la posición de colisión en el jugador
@@ -173,16 +156,14 @@ namespace CanvasDrawing.Game
                 {
                     velocity.y = Math.Abs(velocity.y); // Rebote hacia arriba
                 }
-
-                // Aumentar la velocidad de la pelota
-                velocity *= 1.1f; // Multiplicar la velocidad actual por un factor de incremento
             }
+
             else if (other is Player)
             {
                 Player player = (Player)other;
                 float playerCenter = player.transform.position.y + player.spriteRenderer.Size.y / 2;
 
-                // Invertir la dirección horizontal de la pelota
+                // Invierte la dirección horizontal de la pelota
                 velocity.x = -velocity.x;
 
                 // Ajustar la dirección vertical de la pelota en función de la posición de colisión en el jugador
@@ -194,9 +175,16 @@ namespace CanvasDrawing.Game
                 {
                     velocity.y = Math.Abs(velocity.y); // Rebote hacia arriba
                 }
+            }
 
-                // Aumentar la velocidad de la pelota
-                velocity *= 1.1f; // Multiplicar la velocidad actual por un factor de incremento
+            // Aumenta la velocidad al final del código
+            velocity *= 1.1f;
+
+            // Límite la velocidad máxima de la pelota a 100 unidades por segundo
+            if (velocity.magnitude > 100f)
+            {
+                velocity.Normalize();
+                velocity *= 100f;
             }
         }
 

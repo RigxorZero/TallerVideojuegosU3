@@ -71,6 +71,17 @@ namespace CanvasDrawing.UtalEngine2D_2023_1
             return (float)Math.Sqrt(dx * dx + dy * dy);
         }
 
+        public static Vector2 operator -(Vector2 vector)
+        {
+            return new Vector2(-vector.x, -vector.y);
+        }
+
+        public static Vector2 operator +(Vector2 a, float b)
+        {
+            return new Vector2(a.x + b, a.y + b);
+        }
+
+
         public float magnitude
         {
             get { return (float)Math.Sqrt(x * x + y * y); }
