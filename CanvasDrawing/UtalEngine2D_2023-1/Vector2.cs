@@ -71,6 +71,10 @@ namespace CanvasDrawing.UtalEngine2D_2023_1
             return (float)Math.Sqrt(dx * dx + dy * dy);
         }
 
+        public float magnitude
+        {
+            get { return (float)Math.Sqrt(x * x + y * y); }
+        }
     }
 }
 

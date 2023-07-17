@@ -1,4 +1,5 @@
 ﻿using CanvasDrawing.UtalEngine2D_2023_1;
+using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -14,6 +15,7 @@ namespace CanvasDrawing.Game
         public static Camera MainCamera = new Camera();
         public bool IsActive{private set; get;}
         public static Image ballSprite { get; private set; }
+
         public GameInicio(Form engineDrawForm)
         {
             form = engineDrawForm;
@@ -54,7 +56,7 @@ namespace CanvasDrawing.Game
             form.AutoSize = false;
 
             isInitialized = true;
-
+            
             form.Paint -= GameEngine.Paint;
             form.Paint += Form_Paint;
             form.Refresh();
@@ -116,6 +118,28 @@ namespace CanvasDrawing.Game
         {
             // Crea una instancia del formulario del GameInitializer
             // Inicializa el juego
+            // Crea una instancia de la clase Random
+            Random random = new Random();
+
+            // Genera un ángulo aleatorio entre 0 y 360 grados
+            float angle = (float)(random.NextDouble() * 360f);
+
+            // Verifica si el ángulo generado está dentro de los rangos a evitar
+            while ((angle >= 80f && angle <= 100f) || (angle >= 260f && angle <= 280f))
+            {
+                // Genera un nuevo ángulo aleatorio
+                angle = (float)(random.NextDouble() * 360f);
+            }
+
+            // Convierte el ángulo a radianes
+            float angleRadians = MathHelper.ToRadians(angle);
+
+            // Calcula las componentes x e y de la dirección inicial
+            float directionX = (float)Math.Cos(angleRadians);
+            float directionY = (float)Math.Sin(angleRadians);
+
+            // Crea una instancia de Ball en el centro de la pantalla
+            ballSprite = Properties.Resources.BouncingBall;
             // Obtén las dimensiones de la cámara
             int cameraWidth = GameEngine.MainCamera.xSize;
             int cameraHeight = GameEngine.MainCamera.ySize;
@@ -123,10 +147,10 @@ namespace CanvasDrawing.Game
             // Calcula la posición inicial en el centro de la pantalla
             float ballX = cameraWidth / 2f;
             float ballY = cameraHeight / 2f;
+            Vector2 initialVelocity = new Vector2(directionX, directionY);
+            new Ball(initialVelocity, Properties.Resources.BouncingBall, new Vector2(16, 16), ballX, ballY);
 
-            // Crea una instancia de Ball en el centro de la pantalla
-            ballSprite = Properties.Resources.BouncingBall;
-            new Ball(1, ballSprite, new Vector2(16, 16), ballX, ballY);
+
             form.Paint -= Form_Paint;
             IsActive = false;
             form.Controls.Remove(startButton);
